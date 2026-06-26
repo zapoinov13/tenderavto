@@ -231,3 +231,30 @@ export function participationVerdict(item: {
 
   return { level, summary, pros, cons };
 }
+
+/* ───────────────────── Анализ конкурентов ───────────────────── */
+export type Threat = "high" | "medium" | "low";
+export interface Competitor {
+  name: string;
+  wins: number;
+  participations: number;
+  winRate: number;
+  avgDrop: number;
+  vsYou: string;
+  threat: Threat;
+}
+
+export const COMPETITORS: Competitor[] = [
+  { name: "ТОО «КазОбразование»", wins: 7, participations: 12, winRate: 58, avgDrop: 11, vsYou: "обошёл вас на 2 лотах", threat: "high" },
+  { name: "ТОО «Учебный центр ПБ»", wins: 4, participations: 9, winRate: 44, avgDrop: 6, vsYou: "пересекались 3 раза", threat: "medium" },
+  { name: "ТОО «SafetyPro»", wins: 2, participations: 7, winRate: 29, avgDrop: 14, vsYou: "демпингует по цене", threat: "medium" },
+  { name: "ИП Ахметов А.", wins: 1, participations: 5, winRate: 20, avgDrop: 4, vsYou: "редко пересекаетесь", threat: "low" },
+];
+
+export const COMPETITOR_SUMMARY = {
+  tracked: COMPETITORS.length,
+  mostActive: "ТОО «КазОбразование»",
+  avgFieldSize: 3.2,
+  verdict:
+    "Главный конкурент — «КазОбразование»: высокая активность и среднее снижение 11%. На пересекающихся лотах держите цену чуть агрессивнее. «SafetyPro» демпингует (−14%) — на их лотах маржа будет узкой, оценивайте, стоит ли борьба.",
+};

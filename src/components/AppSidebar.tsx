@@ -7,6 +7,7 @@ import {
   Settings,
   Building2,
   BarChart3,
+  Users,
   Bell,
   LifeBuoy,
   LogOut,
@@ -32,6 +33,7 @@ const mainItems = [
   { title: "Черновики", url: "/drafts", icon: FileText },
   { title: "Проверка документов", url: "/documents", icon: FileCheck2 },
   { title: "Аналитика", url: "/analytics", icon: BarChart3 },
+  { title: "Конкуренты", url: "/competitors", icon: Users },
 ];
 
 const orgItems = [
