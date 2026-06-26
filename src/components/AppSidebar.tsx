@@ -27,15 +27,15 @@ import { signOut } from "@/lib/auth";
 
 const mainItems = [
   { title: "Дашборд", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Лента тендеров", url: "/dashboard", icon: ListChecks },
-  { title: "Черновики", url: "/dashboard", icon: FileText },
-  { title: "Аналитика", url: "/dashboard", icon: BarChart3 },
+  { title: "Лента тендеров", url: "/tenders", icon: ListChecks },
+  { title: "Черновики", url: "/drafts", icon: FileText },
+  { title: "Аналитика", url: "/analytics", icon: BarChart3 },
 ];
 
 const orgItems = [
-  { title: "Поставщик", url: "/dashboard", icon: Building2 },
-  { title: "Уведомления", url: "/dashboard", icon: Bell },
-  { title: "Настройки", url: "/dashboard", icon: Settings },
+  { title: "Поставщик", url: "/supplier", icon: Building2 },
+  { title: "Уведомления", url: "/notifications", icon: Bell },
+  { title: "Настройки", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
@@ -77,13 +77,9 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map((item, i) => (
+              {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={i === 0 && isActive(item.url)}
-                    tooltip={item.title}
-                  >
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                     <Link to={item.url} className="gap-3">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -103,7 +99,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {orgItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                     <Link to={item.url} className="gap-3">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -119,9 +115,11 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Поддержка">
-              <LifeBuoy className="h-4 w-4" />
-              <span>Поддержка</span>
+            <SidebarMenuButton asChild isActive={isActive("/support")} tooltip="Поддержка">
+              <Link to="/support" className="gap-3">
+                <LifeBuoy className="h-4 w-4" />
+                <span>Поддержка</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>

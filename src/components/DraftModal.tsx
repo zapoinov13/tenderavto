@@ -1,0 +1,140 @@
+import { useEffect } from "react";
+import { X, Building2, ShieldAlert, FileSignature } from "lucide-react";
+import { formatKzt, type Decision } from "@/lib/tenders";
+import { DecisionBadge } from "@/components/badges";
+import { SUPPLIER_PROFILE } from "@/lib/app-data";
+
+export interface DraftView {
+  announcement: string;
+  region: string;
+  title: string;
+  amount: number;
+  cost?: number;
+  recommendedPrice?: number;
+  decision?: Decision;
+}
+
+export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const decision: Decision = item.decision ?? "НА ГРАНИ";
+  const margin =
+    item.cost && item.recommendedPrice
+      ? Math.round(((item.recommendedPrice - item.cost) / item.cost) * 100)
+      : null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/50 backdrop-blur-sm animate-fade-up"
+      onClick={onClose}
+    >
+      <div
+        className="bg-card border rounded-2xl shadow-card w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 border-b flex items-start justify-between gap-4 bg-gradient-surface rounded-t-2xl">
+          <div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-mono">
+              №{item.announcement} · {item.region}
+            </div>
+            <h2 className="mt-1 font-display text-xl font-semibold text-foreground">
+              Черновик ценового предложения
+            </h2>
+            <p className="text-sm text-muted-foreground mt-0.5">{item.title}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-accent"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <section>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Расчёт цены
+            </h3>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="bg-muted/50 rounded-xl p-3 border">
+                <div className="text-[11px] text-muted-foreground uppercase tracking-wider">Потолок</div>
+                <div className="mt-1 font-display font-semibold text-foreground">{formatKzt(item.amount)}</div>
+              </div>
+              <div className="bg-muted/50 rounded-xl p-3 border">
+                <div className="text-[11px] text-muted-foreground uppercase tracking-wider">Себестоимость</div>
+                <div className="mt-1 font-display font-semibold text-foreground">
+                  {item.cost ? formatKzt(item.cost) : "—"}
+                </div>
+              </div>
+              <div className="bg-brand/5 border border-brand/30 rounded-xl p-3">
+                <div className="text-[11px] text-brand uppercase tracking-wider font-medium">Рекомендуемая цена</div>
+                <div className="mt-1 font-display font-semibold text-foreground">
+                  {item.recommendedPrice ? formatKzt(item.recommendedPrice) : "—"}
+                </div>
+                {margin !== null && (
+                  <div className="text-[11px] text-muted-foreground mt-0.5">маржа ≈ {margin}%</div>
+                )}
+              </div>
+              <div className="rounded-xl p-3 border flex flex-col justify-center items-start gap-1.5">
+                <div className="text-[11px] text-muted-foreground uppercase tracking-wider">Решение AI</div>
+                <DecisionBadge decision={decision} />
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Поставщик</h3>
+            <div className="mt-3 bg-muted/50 rounded-xl p-4 border flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-brand/10 text-brand border border-brand/20 flex items-center justify-center">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">{SUPPLIER_PROFILE.name}</div>
+                <div className="text-xs text-muted-foreground mt-0.5 font-mono">БИН {SUPPLIER_PROFILE.bin}</div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Чек-лист документов
+            </h3>
+            <ul className="mt-3 space-y-2">
+              {[
+                "Ценовое предложение, подписанное ЭЦП",
+                "Подтверждение квалификации",
+                "Справка об отсутствии налоговой задолженности",
+              ].map((d) => (
+                <li key={d} className="flex items-start gap-2.5 text-sm rounded-lg border bg-card px-3 py-2.5">
+                  <span className="mt-0.5 inline-flex items-center justify-center w-4 h-4 rounded border-2 border-border bg-background shrink-0" />
+                  <span className="text-foreground">{d}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="bg-warning/10 border border-warning/30 rounded-xl px-4 py-3 text-sm text-foreground flex gap-3">
+            <ShieldAlert className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <div>
+              <span className="font-semibold text-warning">Внимание.</span> Цену и подпись подтверждает
+              оператор — это рекомендация, а не автоматическая подача.
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 border-t flex items-center justify-end gap-3 bg-muted/30 rounded-b-2xl">
+          <button onClick={onClose} className="h-10 px-4 rounded-lg border bg-background hover:bg-accent text-sm font-medium">
+            Закрыть
+          </button>
+          <button className="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium shadow-soft">
+            <FileSignature className="w-4 h-4" /> Подписать ЭЦП и подать
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
