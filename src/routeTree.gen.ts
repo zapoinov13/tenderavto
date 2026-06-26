@@ -13,6 +13,7 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as CompetitorsRouteImport } from './routes/competitors'
 import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DeadlinesRouteImport } from './routes/deadlines'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DraftsRouteImport } from './routes/drafts'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -40,6 +41,11 @@ const CustomerRoute = CustomerRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeadlinesRoute = DeadlinesRouteImport.update({
+  id: '/deadlines',
+  path: '/deadlines',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentsRoute = DocumentsRouteImport.update({
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/competitors': typeof CompetitorsRoute
   '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
+  '/deadlines': typeof DeadlinesRoute
   '/documents': typeof DocumentsRoute
   '/drafts': typeof DraftsRoute
   '/notifications': typeof NotificationsRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/competitors': typeof CompetitorsRoute
   '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
+  '/deadlines': typeof DeadlinesRoute
   '/documents': typeof DocumentsRoute
   '/drafts': typeof DraftsRoute
   '/notifications': typeof NotificationsRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/competitors': typeof CompetitorsRoute
   '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
+  '/deadlines': typeof DeadlinesRoute
   '/documents': typeof DocumentsRoute
   '/drafts': typeof DraftsRoute
   '/notifications': typeof NotificationsRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/competitors'
     | '/customer'
     | '/dashboard'
+    | '/deadlines'
     | '/documents'
     | '/drafts'
     | '/notifications'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/competitors'
     | '/customer'
     | '/dashboard'
+    | '/deadlines'
     | '/documents'
     | '/drafts'
     | '/notifications'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/competitors'
     | '/customer'
     | '/dashboard'
+    | '/deadlines'
     | '/documents'
     | '/drafts'
     | '/notifications'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   CompetitorsRoute: typeof CompetitorsRoute
   CustomerRoute: typeof CustomerRoute
   DashboardRoute: typeof DashboardRoute
+  DeadlinesRoute: typeof DeadlinesRoute
   DocumentsRoute: typeof DocumentsRoute
   DraftsRoute: typeof DraftsRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deadlines': {
+      id: '/deadlines'
+      path: '/deadlines'
+      fullPath: '/deadlines'
+      preLoaderRoute: typeof DeadlinesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documents': {
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompetitorsRoute: CompetitorsRoute,
   CustomerRoute: CustomerRoute,
   DashboardRoute: DashboardRoute,
+  DeadlinesRoute: DeadlinesRoute,
   DocumentsRoute: DocumentsRoute,
   DraftsRoute: DraftsRoute,
   NotificationsRoute: NotificationsRoute,

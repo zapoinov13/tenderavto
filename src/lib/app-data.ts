@@ -170,3 +170,23 @@ export const NOTIFICATION_LOG: NotificationItem[] = [
   { id: "n3", title: "Дедлайн приближается", detail: "№901014-1 · до окончания подачи 6 часов", time: "40 мин назад", kind: "deadline", unread: false },
   { id: "n4", title: "Заявка подана", detail: "№900880-1 · Электробезопасность · подписано ЭЦП", time: "вчера", kind: "status", unread: false },
 ];
+
+/* ───────────────────── Дедлайны подачи ───────────────────── */
+export interface Deadline {
+  id: string;
+  announcement: string;
+  title: string;
+  region: string;
+  amount: number;
+  hoursLeft: number;
+  status: DraftStatus;
+}
+
+export const DEADLINES: Deadline[] = [
+  { id: "dl1", announcement: "901001-1", title: "Услуги по обучению промышленной безопасности", region: "Алматы", amount: 18_000_000, hoursLeft: 6, status: "Готов к подписи" },
+  { id: "dl2", announcement: "901003-1", title: "Закупка VR-тренажёров для охраны труда", region: "Астана", amount: 42_000_000, hoursLeft: 18, status: "На проверке" },
+  { id: "dl3", announcement: "901031-1", title: "Курс по пожарно-техническому минимуму", region: "Алматы", amount: 8_900_000, hoursLeft: 22, status: "Готов к подписи" },
+  { id: "dl4", announcement: "901014-1", title: "Курс по промышленной безопасности для ИТР", region: "Астана", amount: 15_500_000, hoursLeft: 31, status: "Подписан" },
+  { id: "dl5", announcement: "901042-1", title: "Аттестация по электробезопасности", region: "Алматы", amount: 11_200_000, hoursLeft: 52, status: "На проверке" },
+  { id: "dl6", announcement: "901055-1", title: "Обучение оказанию первой помощи", region: "Астана", amount: 6_400_000, hoursLeft: 96, status: "Готов к подписи" },
+];
