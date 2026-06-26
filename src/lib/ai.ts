@@ -142,3 +142,39 @@ export const CHAT_SUGGESTIONS = [
   "Какую цену ставить?",
   "Собери черновик предложения",
 ];
+
+/* ───────────────────── Проверка пакета документов ───────────────────── */
+export type DocStatus = "ready" | "warning" | "missing";
+export interface RequiredDoc {
+  name: string;
+  status: DocStatus;
+  note: string;
+}
+
+export const REQUIRED_DOCS: RequiredDoc[] = [
+  { name: "Ценовое предложение, подписанное ЭЦП", status: "ready", note: "сформировано AI, осталось подписать" },
+  { name: "Лицензия на образовательную деятельность", status: "ready", note: "KZ83LAA00012345 · до 12.2028" },
+  { name: "Аттестат по промышленной безопасности", status: "ready", note: "ПБ-2024-0456 · до 06.2027" },
+  { name: "Сертификат ISO 9001:2015", status: "ready", note: "ISO-9001-7788 · до 03.2026" },
+  { name: "Справка об отсутствии налоговой задолженности", status: "warning", note: "получается за 1 рабочий день" },
+  { name: "Допуск СРО на проектные работы", status: "missing", note: "не оформлен — заявку отклонят" },
+];
+
+export function docVerdict(docs: RequiredDoc[]): { ready: number; total: number; percent: number; text: string } {
+  const total = docs.length;
+  const ready = docs.filter((d) => d.status === "ready").length;
+  const missing = docs.filter((d) => d.status === "missing").map((d) => d.name);
+  const warning = docs.filter((d) => d.status === "warning").map((d) => d.name);
+  const percent = Math.round((ready / total) * 100);
+  let text = `Пакет готов на ${percent}% (${ready} из ${total}). `;
+  if (missing.length) {
+    text += `Критично не хватает: ${missing.join(", ")} — без этого заявку отклонят. `;
+  }
+  if (warning.length) {
+    text += `Можно дооформить: ${warning.join(", ")}. `;
+  }
+  if (!missing.length && !warning.length) {
+    text += "Пакет полный, можно подавать.";
+  }
+  return { ready, total, percent, text };
+}

@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   ListChecks,
   FileText,
+  FileCheck2,
   Settings,
   Building2,
   BarChart3,
@@ -29,6 +30,7 @@ const mainItems = [
   { title: "Дашборд", url: "/dashboard", icon: LayoutDashboard },
   { title: "Лента тендеров", url: "/tenders", icon: ListChecks },
   { title: "Черновики", url: "/drafts", icon: FileText },
+  { title: "Проверка документов", url: "/documents", icon: FileCheck2 },
   { title: "Аналитика", url: "/analytics", icon: BarChart3 },
 ];
 
