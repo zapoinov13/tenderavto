@@ -3,7 +3,7 @@ import { X, Building2, ShieldAlert, FileSignature, Sparkles, CheckCircle2 } from
 import { formatKzt, type Decision } from "@/lib/tenders";
 import { DecisionBadge } from "@/components/badges";
 import { SUPPLIER_PROFILE } from "@/lib/app-data";
-import { proposalText } from "@/lib/ai";
+import { proposalText, participationVerdict } from "@/lib/ai";
 
 export interface DraftView {
   announcement: string;
@@ -24,6 +24,17 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
   }, [onClose]);
 
   const decision: Decision = item.decision ?? "НА ГРАНИ";
+  const verdict = participationVerdict({
+    amount: item.amount, cost: item.cost, recommendedPrice: item.recommendedPrice, decision: item.decision,
+  });
+  const verdictCls =
+    verdict.level === "УЧАСТВОВАТЬ"
+      ? "border-success/30 bg-success/5"
+      : verdict.level === "ОСТОРОЖНО"
+      ? "border-warning/30 bg-warning/5"
+      : "border-risk/30 bg-risk/5";
+  const verdictText =
+    verdict.level === "УЧАСТВОВАТЬ" ? "text-success" : verdict.level === "ОСТОРОЖНО" ? "text-warning" : "text-risk";
   const proposal = proposalText({
     title: item.title, announcement: item.announcement, region: item.region,
     recommendedPrice: item.recommendedPrice, supplierName: SUPPLIER_PROFILE.name,
@@ -61,6 +72,39 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
         </div>
 
         <div className="p-6 space-y-6">
+          <section className={`rounded-xl border p-4 ${verdictCls}`}>
+            <div className="flex items-center gap-2">
+              <Sparkles className={`w-4 h-4 ${verdictText}`} />
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Рекомендация AI: стоит ли участвовать
+              </span>
+            </div>
+            <div className={`mt-2 font-display text-lg font-semibold ${verdictText}`}>{verdict.level}</div>
+            <p className="mt-1 text-sm text-foreground/90">{verdict.summary}</p>
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <div className="text-[11px] font-medium text-success mb-1">За участие</div>
+                <ul className="space-y-1">
+                  {verdict.pros.map((x) => (
+                    <li key={x} className="flex items-start gap-1.5 text-[13px] text-foreground/90">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0 mt-0.5" /> {x}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-[11px] font-medium text-warning mb-1">Риски и нюансы</div>
+                <ul className="space-y-1">
+                  {verdict.cons.map((x) => (
+                    <li key={x} className="flex items-start gap-1.5 text-[13px] text-foreground/90">
+                      <ShieldAlert className="w-3.5 h-3.5 text-warning shrink-0 mt-0.5" /> {x}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
           <section>
             <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               Расчёт цены

@@ -178,3 +178,56 @@ export function docVerdict(docs: RequiredDoc[]): { ready: number; total: number;
   }
   return { ready, total, percent, text };
 }
+
+/* ───────────────────── Вердикт «стоит ли участвовать» ───────────────────── */
+export type VerdictLevel = "УЧАСТВОВАТЬ" | "ОСТОРОЖНО" | "ПРОПУСТИТЬ";
+export interface Verdict {
+  level: VerdictLevel;
+  summary: string;
+  pros: string[];
+  cons: string[];
+}
+
+export function participationVerdict(item: {
+  amount: number;
+  cost?: number;
+  recommendedPrice?: number;
+  decision?: Decision;
+}): Verdict {
+  const margin =
+    item.cost && item.recommendedPrice
+      ? Math.round(((item.recommendedPrice - item.cost) / item.cost) * 100)
+      : null;
+
+  if (item.decision === "НЕ ВЫГОДНО") {
+    return {
+      level: "ПРОПУСТИТЬ",
+      summary: "Участие убыточно: себестоимость с минимальной маржой выше объявленного потолка.",
+      pros: ["Тематика и регион подходят под профиль компании"],
+      cons: [
+        "Потолок ниже вашей себестоимости — прибыли не будет",
+        "Опустить цену без ухода в минус невозможно",
+      ],
+    };
+  }
+
+  const pros = [
+    "Соответствует профилю и ОКЭД компании",
+    "Есть опыт: 4 похожие выигранные закупки",
+  ];
+  if (margin !== null) pros.push(`Цена проходит с маржой ≈ ${margin}%`);
+  pros.push("Заказчик распределяет закупки между поставщиками — нет «заточки» под одного");
+
+  const cons = [
+    "В среднем 3 участника — конкуренция умеренная",
+    "Для победы держите снижение около 7–9% от потолка",
+  ];
+
+  const level: VerdictLevel = margin !== null && margin < 12 ? "ОСТОРОЖНО" : "УЧАСТВОВАТЬ";
+  const summary =
+    level === "УЧАСТВОВАТЬ"
+      ? "Хорошие шансы: лот под ваш профиль, цена с запасом по марже, заказчик открытый к новым поставщикам."
+      : "Участвовать можно, но маржа узкая — внимательно следите за ценой на торгах.";
+
+  return { level, summary, pros, cons };
+}
