@@ -1,8 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bell, Send, MessageCircle, Mail, Sparkles, Clock, Activity } from "lucide-react";
+import { Bell, Send, MessageCircle, Mail, Sparkles, Clock, Activity, Check, Plus } from "lucide-react";
 import { getSession } from "@/lib/auth";
-import { NOTIFICATION_CHANNELS, NOTIFICATION_TRIGGERS, NOTIFICATION_LOG } from "@/lib/app-data";
+import {
+  NOTIFICATION_CHANNELS,
+  NOTIFICATION_TRIGGERS,
+  NOTIFICATION_LOG,
+  type NotificationItem,
+} from "@/lib/app-data";
 import { AppShell, PageHeader } from "@/components/AppShell";
 
 export const Route = createFileRoute("/notifications")({
@@ -15,10 +20,7 @@ export const Route = createFileRoute("/notifications")({
 
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className={`relative w-11 h-6 rounded-full transition shrink-0 ${on ? "bg-success" : "bg-muted-foreground/30"}`}
-    >
+    <button onClick={onClick} className={`relative w-11 h-6 rounded-full transition shrink-0 ${on ? "bg-success" : "bg-muted-foreground/30"}`}>
       <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition ${on ? "translate-x-5" : ""}`} />
     </button>
   );
@@ -27,9 +29,29 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
 const channelIcon: Record<string, React.ElementType> = { tg: Send, wa: MessageCircle, email: Mail };
 const logIcon: Record<string, React.ElementType> = { match: Sparkles, deadline: Clock, status: Activity };
 
+const NEW_SAMPLES: Omit<NotificationItem, "id" | "time" | "unread">[] = [
+  { title: "Новый тендер под профиль", detail: "№901077-1 · Обучение электробезопасности · 13.4 млн ₸", kind: "match" },
+  { title: "Новый тендер под профиль", detail: "№901080-1 · Аттестация ИТР · 9.8 млн ₸", kind: "match" },
+  { title: "Дедлайн приближается", detail: "№901003-1 · до окончания подачи 3 часа", kind: "deadline" },
+];
+
 function NotificationsPage() {
   const [channels, setChannels] = useState(NOTIFICATION_CHANNELS);
   const [triggers, setTriggers] = useState(NOTIFICATION_TRIGGERS);
+  const [log, setLog] = useState<NotificationItem[]>(NOTIFICATION_LOG);
+
+  const unread = log.filter((n) => n.unread).length;
+
+  function markRead(id: string) {
+    setLog((p) => p.map((n) => (n.id === id ? { ...n, unread: false } : n)));
+  }
+  function markAll() {
+    setLog((p) => p.map((n) => ({ ...n, unread: false })));
+  }
+  function simulateNew() {
+    const s = NEW_SAMPLES[Math.floor(Math.random() * NEW_SAMPLES.length)];
+    setLog((p) => [{ ...s, id: `n${Date.now()}`, time: "только что", unread: true }, ...p]);
+  }
 
   return (
     <AppShell>
@@ -55,12 +77,7 @@ function NotificationsPage() {
                       <div className="text-sm font-medium text-foreground">{c.name}</div>
                       <div className="text-[11px] text-muted-foreground font-mono">{c.value}</div>
                     </div>
-                    <Toggle
-                      on={c.enabled}
-                      onClick={() =>
-                        setChannels((p) => p.map((x) => (x.id === c.id ? { ...x, enabled: !x.enabled } : x)))
-                      }
-                    />
+                    <Toggle on={c.enabled} onClick={() => setChannels((p) => p.map((x) => (x.id === c.id ? { ...x, enabled: !x.enabled } : x)))} />
                   </div>
                 );
               })}
@@ -73,12 +90,7 @@ function NotificationsPage() {
               {triggers.map((t) => (
                 <div key={t.id} className="flex items-center gap-3 rounded-lg border bg-background px-3 py-3">
                   <span className="text-sm text-foreground flex-1">{t.label}</span>
-                  <Toggle
-                    on={t.enabled}
-                    onClick={() =>
-                      setTriggers((p) => p.map((x) => (x.id === t.id ? { ...x, enabled: !x.enabled } : x)))
-                    }
-                  />
+                  <Toggle on={t.enabled} onClick={() => setTriggers((p) => p.map((x) => (x.id === t.id ? { ...x, enabled: !x.enabled } : x)))} />
                 </div>
               ))}
             </div>
@@ -86,16 +98,33 @@ function NotificationsPage() {
         </div>
 
         <div className="rounded-2xl border bg-card p-5 shadow-soft">
-          <h3 className="font-display font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Bell className="w-4 h-4 text-brand" /> Последние уведомления
-          </h3>
+          <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+            <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
+              <Bell className="w-4 h-4 text-brand" /> Лента
+              {unread > 0 && (
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-risk text-white text-[11px] font-semibold flex items-center justify-center">
+                  {unread}
+                </span>
+              )}
+            </h3>
+            <div className="flex items-center gap-2">
+              <button onClick={simulateNew} className="h-8 px-2.5 rounded-md border bg-background hover:bg-accent text-[12px] font-medium inline-flex items-center gap-1">
+                <Plus className="w-3.5 h-3.5" /> Новое (демо)
+              </button>
+              <button onClick={markAll} disabled={unread === 0} className="h-8 px-2.5 rounded-md border bg-background hover:bg-accent text-[12px] font-medium inline-flex items-center gap-1 disabled:opacity-40">
+                <Check className="w-3.5 h-3.5" /> Прочитать все
+              </button>
+            </div>
+          </div>
+
           <div className="space-y-2">
-            {NOTIFICATION_LOG.map((n) => {
+            {log.map((n) => {
               const Icon = logIcon[n.kind] ?? Bell;
               return (
-                <div
+                <button
                   key={n.id}
-                  className={`flex items-start gap-3 rounded-lg border px-3 py-3 ${n.unread ? "bg-brand/5 border-brand/20" : "bg-background"}`}
+                  onClick={() => markRead(n.id)}
+                  className={`w-full text-left flex items-start gap-3 rounded-lg border px-3 py-3 transition ${n.unread ? "bg-brand/5 border-brand/20 hover:bg-brand/10" : "bg-background hover:bg-accent"}`}
                 >
                   <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
                     <Icon className="w-4 h-4 text-muted-foreground" />
@@ -108,7 +137,7 @@ function NotificationsPage() {
                     <div className="text-[12px] text-muted-foreground mt-0.5">{n.detail}</div>
                     <div className="text-[11px] text-muted-foreground/70 mt-1">{n.time}</div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
