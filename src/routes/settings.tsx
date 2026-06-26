@@ -1,6 +1,6 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { X, Plus, Check, KeyRound, Sliders, MapPin, Server } from "lucide-react";
+import { X, Plus, Check, KeyRound, Sliders, MapPin, Server, Sparkles } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { SEARCH_PROFILE, ALL_REGIONS, PLATFORMS } from "@/lib/app-data";
 import { AppShell, PageHeader } from "@/components/AppShell";
@@ -37,6 +37,7 @@ function loadSaved(): Record<string, unknown> {
 }
 
 function SettingsPage() {
+  const navigate = useNavigate();
   const saved = loadSaved();
   const [keywords, setKeywords] = useState<string[]>((saved.keywords as string[]) ?? SEARCH_PROFILE.keywords);
   const [kw, setKw] = useState("");
@@ -77,6 +78,15 @@ function SettingsPage() {
         title="Настройки поиска"
         subtitle="Профиль, по которому AI отбирает тендеры и считает цену. Чем точнее настройка — тем меньше шума и выше попадание."
       />
+
+      <div className="mb-6">
+        <button
+          onClick={() => navigate({ to: "/onboarding" })}
+          className="inline-flex items-center gap-2 h-10 px-4 rounded-lg border bg-card hover:bg-accent text-sm font-medium text-foreground"
+        >
+          <Sparkles className="w-4 h-4 text-brand" /> Пройти мастер настройки заново
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card icon={Sliders} title="Ключевые слова" desc="Лот подходит, если название содержит одно из слов.">

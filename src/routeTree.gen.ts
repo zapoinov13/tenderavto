@@ -17,6 +17,7 @@ import { Route as DeadlinesRouteImport } from './routes/deadlines'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DraftsRouteImport } from './routes/drafts'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SupplierRouteImport } from './routes/supplier'
 import { Route as SupportRouteImport } from './routes/support'
@@ -63,6 +64,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof DocumentsRoute
   '/drafts': typeof DraftsRoute
   '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/supplier': typeof SupplierRoute
   '/support': typeof SupportRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/drafts': typeof DraftsRoute
   '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/supplier': typeof SupplierRoute
   '/support': typeof SupportRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/documents': typeof DocumentsRoute
   '/drafts': typeof DraftsRoute
   '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/supplier': typeof SupplierRoute
   '/support': typeof SupportRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/drafts'
     | '/notifications'
+    | '/onboarding'
     | '/settings'
     | '/supplier'
     | '/support'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/drafts'
     | '/notifications'
+    | '/onboarding'
     | '/settings'
     | '/supplier'
     | '/support'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/drafts'
     | '/notifications'
+    | '/onboarding'
     | '/settings'
     | '/supplier'
     | '/support'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   DocumentsRoute: typeof DocumentsRoute
   DraftsRoute: typeof DraftsRoute
   NotificationsRoute: typeof NotificationsRoute
+  OnboardingRoute: typeof OnboardingRoute
   SettingsRoute: typeof SettingsRoute
   SupplierRoute: typeof SupplierRoute
   SupportRoute: typeof SupportRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentsRoute: DocumentsRoute,
   DraftsRoute: DraftsRoute,
   NotificationsRoute: NotificationsRoute,
+  OnboardingRoute: OnboardingRoute,
   SettingsRoute: SettingsRoute,
   SupplierRoute: SupplierRoute,
   SupportRoute: SupportRoute,
