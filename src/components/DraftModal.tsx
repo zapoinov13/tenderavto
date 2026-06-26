@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { X, Building2, ShieldAlert, FileSignature, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, Building2, ShieldAlert, FileSignature, Sparkles, CheckCircle2 } from "lucide-react";
 import { formatKzt, type Decision } from "@/lib/tenders";
 import { DecisionBadge } from "@/components/badges";
 import { SUPPLIER_PROFILE } from "@/lib/app-data";
@@ -16,6 +16,7 @@ export interface DraftView {
 }
 
 export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => void }) {
+  const [signed, setSigned] = useState(false);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -147,13 +148,29 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
           </div>
         </div>
 
-        <div className="p-6 border-t flex items-center justify-end gap-3 bg-muted/30 rounded-b-2xl">
-          <button onClick={onClose} className="h-10 px-4 rounded-lg border bg-background hover:bg-accent text-sm font-medium">
-            Закрыть
-          </button>
-          <button className="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium shadow-soft">
-            <FileSignature className="w-4 h-4" /> Подписать ЭЦП и подать
-          </button>
+        <div className="p-6 border-t flex items-center justify-between gap-3 bg-muted/30 rounded-b-2xl">
+          {signed ? (
+            <div className="flex items-center gap-2 text-sm text-success font-medium">
+              <CheckCircle2 className="w-5 h-5" /> Заявка подписана ЭЦП и подана (демо)
+            </div>
+          ) : (
+            <span className="text-[11px] text-muted-foreground">
+              Подпись выполняется через NCALayer ключом вашей компании
+            </span>
+          )}
+          <div className="flex items-center gap-3">
+            <button onClick={onClose} className="h-10 px-4 rounded-lg border bg-background hover:bg-accent text-sm font-medium">
+              Закрыть
+            </button>
+            {!signed && (
+              <button
+                onClick={() => setSigned(true)}
+                className="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium shadow-soft"
+              >
+                <FileSignature className="w-4 h-4" /> Подписать ЭЦП и подать
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

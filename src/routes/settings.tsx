@@ -26,15 +26,26 @@ function Card({ icon: Icon, title, desc, children }: { icon: React.ElementType; 
   );
 }
 
+const PROFILE_KEY = "qaztender.profile";
+function loadSaved(): Record<string, unknown> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(window.localStorage.getItem(PROFILE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
 function SettingsPage() {
-  const [keywords, setKeywords] = useState<string[]>(SEARCH_PROFILE.keywords);
+  const saved = loadSaved();
+  const [keywords, setKeywords] = useState<string[]>((saved.keywords as string[]) ?? SEARCH_PROFILE.keywords);
   const [kw, setKw] = useState("");
-  const [regions, setRegions] = useState<string[]>(SEARCH_PROFILE.regions);
-  const [budgetMin, setBudgetMin] = useState(SEARCH_PROFILE.budgetMin);
-  const [budgetMax, setBudgetMax] = useState(SEARCH_PROFILE.budgetMax);
-  const [discount, setDiscount] = useState(SEARCH_PROFILE.targetDiscount);
-  const [margin, setMargin] = useState(SEARCH_PROFILE.minMargin);
-  const [interval, setIntervalSec] = useState(SEARCH_PROFILE.intervalSec);
+  const [regions, setRegions] = useState<string[]>((saved.regions as string[]) ?? SEARCH_PROFILE.regions);
+  const [budgetMin, setBudgetMin] = useState((saved.budgetMin as number) ?? SEARCH_PROFILE.budgetMin);
+  const [budgetMax, setBudgetMax] = useState((saved.budgetMax as number) ?? SEARCH_PROFILE.budgetMax);
+  const [discount, setDiscount] = useState((saved.targetDiscount as number) ?? SEARCH_PROFILE.targetDiscount);
+  const [margin, setMargin] = useState((saved.minMargin as number) ?? SEARCH_PROFILE.minMargin);
+  const [interval, setIntervalSec] = useState((saved.intervalSec as number) ?? SEARCH_PROFILE.intervalSec);
   const [token, setToken] = useState("");
   const [saved, setSaved] = useState(false);
 
@@ -47,6 +58,12 @@ function SettingsPage() {
     setRegions((p) => (p.includes(r) ? p.filter((x) => x !== r) : [...p, r]));
   }
   function save() {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(
+        PROFILE_KEY,
+        JSON.stringify({ keywords, regions, budgetMin, budgetMax, targetDiscount: discount, minMargin: margin, intervalSec: interval }),
+      );
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   }
