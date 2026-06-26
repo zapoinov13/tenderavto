@@ -5,7 +5,7 @@ import { METRICS, TENDERS, formatKzt, type Tender } from "@/lib/tenders";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
-    meta: [{ title: "Дашборд · ТендерАвто" }],
+    meta: [{ title: "Дашборд · QazTender AI" }],
   }),
   beforeLoad: () => {
     if (typeof window !== "undefined" && !getSession()) {
