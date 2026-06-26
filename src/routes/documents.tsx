@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { UploadCloud, CheckCircle2, AlertTriangle, XCircle, Sparkles, FileText } from "lucide-react";
+import { CloudUpload, CheckCircle2, TriangleAlert, CircleX, Sparkles, FileText } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { REQUIRED_DOCS, docVerdict } from "@/lib/ai";
 import { AppShell, PageHeader } from "@/components/AppShell";
@@ -15,8 +15,8 @@ export const Route = createFileRoute("/documents")({
 
 function StatusIcon({ status }: { status: string }) {
   if (status === "ready") return <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-success" />;
-  if (status === "warning") return <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-warning" />;
-  return <XCircle className="w-5 h-5 shrink-0 mt-0.5 text-risk" />;
+  if (status === "warning") return <TriangleAlert className="w-5 h-5 shrink-0 mt-0.5 text-warning" />;
+  return <CircleX className="w-5 h-5 shrink-0 mt-0.5 text-risk" />;
 }
 
 function statusMeta(status: string): { cls: string; label: string } {
@@ -43,7 +43,7 @@ function DocumentsPage() {
           className="w-full rounded-2xl border-2 border-dashed border-border hover:border-brand/40 bg-card/60 hover:bg-card transition py-14 flex flex-col items-center justify-center gap-3 text-center"
         >
           <div className="w-14 h-14 rounded-2xl bg-brand/10 text-brand flex items-center justify-center">
-            <UploadCloud className="w-7 h-7" />
+            <CloudUpload className="w-7 h-7" />
           </div>
           <div className="font-display text-lg font-semibold text-foreground">Загрузить пакет документов</div>
           <div className="text-sm text-muted-foreground">Перетащите PDF или нажмите, чтобы выбрать (демо)</div>
