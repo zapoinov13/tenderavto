@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { X, Building2, ShieldAlert, FileSignature } from "lucide-react";
+import { X, Building2, ShieldAlert, FileSignature, Sparkles } from "lucide-react";
 import { formatKzt, type Decision } from "@/lib/tenders";
 import { DecisionBadge } from "@/components/badges";
 import { SUPPLIER_PROFILE } from "@/lib/app-data";
+import { proposalText } from "@/lib/ai";
 
 export interface DraftView {
   announcement: string;
@@ -22,6 +23,10 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
   }, [onClose]);
 
   const decision: Decision = item.decision ?? "НА ГРАНИ";
+  const proposal = proposalText({
+    title: item.title, announcement: item.announcement, region: item.region,
+    recommendedPrice: item.recommendedPrice, supplierName: SUPPLIER_PROFILE.name,
+  });
   const margin =
     item.cost && item.recommendedPrice
       ? Math.round(((item.recommendedPrice - item.cost) / item.cost) * 100)
@@ -95,6 +100,22 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
               <div>
                 <div className="font-semibold text-foreground">{SUPPLIER_PROFILE.name}</div>
                 <div className="text-xs text-muted-foreground mt-0.5 font-mono">БИН {SUPPLIER_PROFILE.bin}</div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-brand" /> Предложение (черновик AI)
+            </h3>
+            <div className="mt-3 space-y-3">
+              <div className="rounded-xl border bg-muted/40 p-3">
+                <div className="text-[11px] text-brand font-medium mb-1">Техническое предложение</div>
+                <p className="text-[13px] text-foreground/90 leading-relaxed">{proposal.tech}</p>
+              </div>
+              <div className="rounded-xl border bg-muted/40 p-3">
+                <div className="text-[11px] text-brand font-medium mb-1">Коммерческое предложение</div>
+                <p className="text-[13px] text-foreground/90 leading-relaxed">{proposal.commercial}</p>
               </div>
             </div>
           </section>

@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { LiveIndicator } from "@/components/badges";
+import { AiAssistant } from "@/components/AiAssistant";
 import { signOut } from "@/lib/auth";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -39,6 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </main>
         </SidebarInset>
       </div>
+      <AiAssistant />
     </SidebarProvider>
   );
 }
