@@ -64,8 +64,8 @@ function SettingsPage() {
         JSON.stringify({ keywords, regions, budgetMin, budgetMax, targetDiscount: discount, minMargin: margin, intervalSec: interval }),
       );
     }
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setSavedFlag(true);
+    setTimeout(() => setSavedFlag(false), 2500);
   }
 
   const input = "h-10 w-full px-3 rounded-lg border bg-background text-sm outline-none focus:ring-2 focus:ring-ring transition";
@@ -183,7 +183,7 @@ function SettingsPage() {
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-3">
-        {saved && (
+        {savedFlag && (
           <span className="inline-flex items-center gap-1.5 text-sm text-success">
             <Check className="w-4 h-4" /> Настройки сохранены
           </span>
