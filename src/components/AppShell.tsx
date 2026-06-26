@@ -1,6 +1,6 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { useNavigate, Link, useRouterState } from "@tanstack/react-router";
-import { Bell, ChevronDown, LogOut, Settings as SettingsIcon, Building2, Search } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Settings as SettingsIcon, Building2, Search, Sun, Moon } from "lucide-react";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { LiveIndicator } from "@/components/badges";
@@ -78,6 +78,30 @@ function NotificationsBell() {
   );
 }
 
+function ThemeToggle() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const saved = typeof window !== "undefined" && window.localStorage.getItem("qaztender.theme") === "dark";
+    setDark(saved);
+    document.documentElement.classList.toggle("dark", saved);
+  }, []);
+  function toggle() {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    if (typeof window !== "undefined") window.localStorage.setItem("qaztender.theme", next ? "dark" : "light");
+  }
+  return (
+    <button
+      onClick={toggle}
+      className="h-9 w-9 rounded-lg border bg-card hover:bg-accent flex items-center justify-center text-foreground"
+      aria-label="Тема"
+    >
+      {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+    </button>
+  );
+}
+
 function GlobalSearch() {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
@@ -118,6 +142,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
               <GlobalSearch />
               <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <NotificationsBell />
                 <UserMenu />
               </div>
