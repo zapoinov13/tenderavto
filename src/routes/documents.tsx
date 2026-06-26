@@ -1,3 +1,4 @@
+// route: /documents — AI-проверка пакета документов
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { UploadCloud, CheckCircle2, AlertTriangle, XCircle, Sparkles, FileText } from "lucide-react";
