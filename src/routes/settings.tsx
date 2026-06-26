@@ -47,7 +47,7 @@ function SettingsPage() {
   const [margin, setMargin] = useState((saved.minMargin as number) ?? SEARCH_PROFILE.minMargin);
   const [interval, setIntervalSec] = useState((saved.intervalSec as number) ?? SEARCH_PROFILE.intervalSec);
   const [token, setToken] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [savedFlag, setSavedFlag] = useState(false);
 
   function addKw() {
     const v = kw.trim().toLowerCase();
