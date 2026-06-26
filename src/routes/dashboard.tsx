@@ -18,8 +18,8 @@ export const Route = createFileRoute("/dashboard")({
 function Logo() {
   return (
     <div className="text-xl font-semibold tracking-tight">
-      <span className="text-primary">Тендер</span>
-      <span className="text-brand">Авто</span>
+      <span className="text-primary">QazTender</span>
+      <span className="text-brand"> AI</span>
     </div>
   );
 }

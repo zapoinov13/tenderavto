@@ -5,7 +5,7 @@ import { signIn, getSession, DEMO_CREDENTIALS } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ТендерАвто — AI-ассистент по госзакупкам РК" },
+      { title: "QazTender AI — AI-ассистент по госзакупкам РК" },
       { name: "description", content: "AI-мониторинг и черновики ценовых предложений для госзакупок Казахстана." },
     ],
   }),
@@ -20,8 +20,8 @@ export const Route = createFileRoute("/")({
 function Logo({ className = "" }: { className?: string }) {
   return (
     <div className={`text-2xl font-semibold tracking-tight ${className}`}>
-      <span className="text-primary">Тендер</span>
-      <span className="text-brand">Авто</span>
+      <span className="text-primary">QazTender</span>
+      <span className="text-brand"> AI</span>
     </div>
   );
 }
@@ -123,7 +123,7 @@ function LoginPage() {
         </button>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          © {new Date().getFullYear()} ТендерАвто · Госзакупки РК
+          © {new Date().getFullYear()} QazTender AI · Госзакупки РК
         </p>
       </div>
     </div>
