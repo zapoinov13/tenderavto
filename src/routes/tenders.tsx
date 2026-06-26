@@ -9,6 +9,9 @@ import { DraftModal, type DraftView } from "@/components/DraftModal";
 
 export const Route = createFileRoute("/tenders")({
   head: () => ({ meta: [{ title: "Лента тендеров · QazTender AI" }] }),
+  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
+    q: typeof search.q === "string" ? search.q : undefined,
+  }),
   beforeLoad: () => {
     if (typeof window !== "undefined" && !getSession()) throw redirect({ to: "/" });
   },
@@ -18,8 +21,9 @@ export const Route = createFileRoute("/tenders")({
 const METHODS: (Method | "Все")[] = ["Все", "ЗЦП", "Конкурс", "Аукцион"];
 
 function TendersPage() {
+  const search = Route.useSearch();
   const [open, setOpen] = useState<DraftView | null>(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(search.q ?? "");
   const [tab, setTab] = useState<"all" | "matching" | "rejected">("all");
   const [method, setMethod] = useState<(Method | "Все")>("Все");
 

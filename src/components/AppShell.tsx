@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useNavigate, Link, useRouterState } from "@tanstack/react-router";
-import { Bell, ChevronDown, LogOut, Settings as SettingsIcon, Building2 } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Settings as SettingsIcon, Building2, Search } from "lucide-react";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { LiveIndicator } from "@/components/badges";
@@ -78,6 +78,30 @@ function NotificationsBell() {
   );
 }
 
+function GlobalSearch() {
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        navigate({ to: "/tenders", search: { q: q.trim() || undefined } });
+      }}
+      className="hidden md:block flex-1 max-w-sm"
+    >
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Поиск по тендерам…"
+          className="h-9 w-full pl-9 pr-3 rounded-lg border bg-card text-sm outline-none focus:ring-2 focus:ring-ring transition"
+        />
+      </div>
+    </form>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
@@ -92,6 +116,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <LiveIndicator />
                 </div>
               </div>
+              <GlobalSearch />
               <div className="flex items-center gap-2">
                 <NotificationsBell />
                 <UserMenu />

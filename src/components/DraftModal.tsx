@@ -65,7 +65,7 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
             <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               Расчёт цены
             </h3>
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-muted/50 rounded-xl p-3 border">
                 <div className="text-[11px] text-muted-foreground uppercase tracking-wider">Потолок</div>
                 <div className="mt-1 font-display font-semibold text-foreground">{formatKzt(item.amount)}</div>
