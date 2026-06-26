@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, Building2, ShieldAlert, FileSignature, Sparkles, CheckCircle2 } from "lucide-react";
+import { X, Building2, ShieldAlert, FileSignature, Sparkles, CheckCircle2, Printer } from "lucide-react";
 import { formatKzt, type Decision } from "@/lib/tenders";
 import { DecisionBadge } from "@/components/badges";
 import { SUPPLIER_PROFILE } from "@/lib/app-data";
@@ -39,6 +39,32 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
     title: item.title, announcement: item.announcement, region: item.region,
     recommendedPrice: item.recommendedPrice, supplierName: SUPPLIER_PROFILE.name,
   });
+  function printDraft() {
+    if (typeof window === "undefined") return;
+    const w = window.open("", "_blank", "width=820,height=920");
+    if (!w) return;
+    const f = (n?: number) => (n ? new Intl.NumberFormat("ru-RU").format(n) + " \u20B8" : "\u2014");
+    w.document.write(
+      "<html><head><meta charset='utf-8'><title>\u0426\u0435\u043D\u043E\u0432\u043E\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 " + item.announcement + "</title>" +
+      "<style>body{font-family:Arial,sans-serif;color:#16202E;max-width:720px;margin:32px auto;padding:0 24px;line-height:1.5}h1{color:#1F3A5F;font-size:20px;margin-bottom:4px}h2{color:#2E6DA4;font-size:13px;text-transform:uppercase;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:4px}.kv{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f3f3f3;font-size:14px}p{font-size:14px}.muted{color:#667}</style></head><body>" +
+      "<h1>\u0426\u0435\u043D\u043E\u0432\u043E\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435</h1>" +
+      "<p class='muted'>\u2116 " + item.announcement + " \u00B7 " + item.region + " \u00B7 " + item.title + "</p>" +
+      "<h2>\u0420\u0430\u0441\u0447\u0451\u0442 \u0446\u0435\u043D\u044B</h2>" +
+      "<div class='kv'><span>\u041F\u043E\u0442\u043E\u043B\u043E\u043A</span><b>" + f(item.amount) + "</b></div>" +
+      "<div class='kv'><span>\u0421\u0435\u0431\u0435\u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C</span><b>" + f(item.cost) + "</b></div>" +
+      "<div class='kv'><span>\u0420\u0435\u043A\u043E\u043C\u0435\u043D\u0434\u0443\u0435\u043C\u0430\u044F \u0446\u0435\u043D\u0430</span><b>" + f(item.recommendedPrice) + "</b></div>" +
+      "<div class='kv'><span>\u0420\u0435\u0448\u0435\u043D\u0438\u0435 AI</span><b>" + verdict.level + "</b></div>" +
+      "<h2>\u0422\u0435\u0445\u043D\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435</h2><p>" + proposal.tech + "</p>" +
+      "<h2>\u041A\u043E\u043C\u043C\u0435\u0440\u0447\u0435\u0441\u043A\u043E\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435</h2><p>" + proposal.commercial + "</p>" +
+      "<h2>\u041F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A</h2>" +
+      "<div class='kv'><span>\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F</span><b>" + SUPPLIER_PROFILE.name + "</b></div>" +
+      "<div class='kv'><span>\u0411\u0418\u041D</span><b>" + SUPPLIER_PROFILE.bin + "</b></div>" +
+      "</body></html>"
+    );
+    w.document.close();
+    w.focus();
+    w.print();
+  }
   const margin =
     item.cost && item.recommendedPrice
       ? Math.round(((item.recommendedPrice - item.cost) / item.cost) * 100)
@@ -203,6 +229,9 @@ export function DraftModal({ item, onClose }: { item: DraftView; onClose: () => 
             </span>
           )}
           <div className="flex items-center gap-3">
+            <button onClick={printDraft} className="h-10 px-4 rounded-lg border bg-background hover:bg-accent text-sm font-medium inline-flex items-center gap-1.5">
+              <Printer className="w-4 h-4" /> PDF
+            </button>
             <button onClick={onClose} className="h-10 px-4 rounded-lg border bg-background hover:bg-accent text-sm font-medium">
               Закрыть
             </button>
